@@ -17,7 +17,7 @@ import com.archit.calendardaterangepicker.R;
 import com.archit.calendardaterangepicker.adapter.AdapterEventCalendarMonths;
 import com.archit.calendardaterangepicker.models.CalendarStyleAttr;
 
-import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -159,7 +159,7 @@ public class DateRangeCalendarView extends LinearLayout {
     private void setCalendarYearTitle(int position) {
 
         Calendar currentCalendarMonth = dataList.get(position);
-        String dateText = new DateFormatSymbols(locale).getMonths()[currentCalendarMonth.get(Calendar.MONTH)];
+        String dateText = new SimpleDateFormat("LLLL", locale).format(currentCalendarMonth.getTimeInMillis());
         dateText = dateText.substring(0, 1).toUpperCase() + dateText.subSequence(1, dateText.length());
 
         String yearTitle = dateText + " " + currentCalendarMonth.get(Calendar.YEAR);
