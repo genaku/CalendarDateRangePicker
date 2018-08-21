@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AwesomeCalendar</string>
+    <string name="app_name" translatable="false">AwesomeCalendar</string>
 
     <string name="cdrp_mon">Mon</string>
     <string name="cdrp_tue">Tue</string>
