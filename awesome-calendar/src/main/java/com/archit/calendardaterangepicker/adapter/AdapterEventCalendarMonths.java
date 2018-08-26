@@ -25,13 +25,15 @@ public class AdapterEventCalendarMonths extends PagerAdapter {
     private CalendarStyleAttr calendarStyleAttr;
     private DateRangeCalendarView.CalendarListener calendarListener;
     private DateRangeCalendarManager dateRangeCalendarManager;
+    private DateRangeCalendarManager allowedRangeCalendarManager;
     private Handler mHandler;
 
     public AdapterEventCalendarMonths(Context mContext, List<Calendar> list, CalendarStyleAttr calendarStyleAttr) {
         this.mContext = mContext;
         dataList = list;
         this.calendarStyleAttr = calendarStyleAttr;
-        dateRangeCalendarManager = new DateRangeCalendarManager();
+        dateRangeCalendarManager = new DateRangeCalendarManager(true);
+        allowedRangeCalendarManager = new DateRangeCalendarManager(false);
         mHandler = new Handler();
     }
 
@@ -54,7 +56,7 @@ public class AdapterEventCalendarMonths extends PagerAdapter {
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.layout_pager_month, container, false);
 
         DateRangeMonthView dateRangeMonthView = layout.findViewById(R.id.cvEventCalendarView);
-        dateRangeMonthView.drawCalendarForMonth(calendarStyleAttr, getCurrentMonth(modelObject), dateRangeCalendarManager);
+        dateRangeMonthView.drawCalendarForMonth(calendarStyleAttr, getCurrentMonth(modelObject), dateRangeCalendarManager, allowedRangeCalendarManager);
         dateRangeMonthView.setCalendarListener(calendarAdapterListener);
 
         container.addView(layout);
@@ -141,9 +143,15 @@ public class AdapterEventCalendarMonths extends PagerAdapter {
     }
 
 
-    public void setSelectedDate(Calendar minSelectedDate,Calendar maxSelectedDate) {
+    public void setSelectedDate(Calendar minSelectedDate, Calendar maxSelectedDate) {
         dateRangeCalendarManager.setMinSelectedDate(minSelectedDate);
         dateRangeCalendarManager.setMaxSelectedDate(maxSelectedDate);
+        notifyDataSetChanged();
+    }
+
+    public void setCalendarLimits(Calendar minDate, Calendar maxDate) {
+        allowedRangeCalendarManager.setMinSelectedDate(minDate);
+        allowedRangeCalendarManager.setMaxSelectedDate(maxDate);
         notifyDataSetChanged();
     }
 

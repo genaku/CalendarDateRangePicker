@@ -41,7 +41,6 @@ public class DateRangeCalendarView extends LinearLayout {
     private ViewPager vpCalendar;
     private CalendarStyleAttr calendarStyleAttr;
 
-
     private final static int TOTAL_ALLOWED_MONTHS = 30;
 
     public DateRangeCalendarView(Context context) {
@@ -225,6 +224,7 @@ public class DateRangeCalendarView extends LinearLayout {
      * <B>Note:</B><br>
      * You can not set null start date with valid end date.<br>
      * You can not set end date before start date.<br>
+     *
      * @param startDate Start date
      * @param endDate   End date
      */
@@ -238,12 +238,24 @@ public class DateRangeCalendarView extends LinearLayout {
     }
 
     /**
+     * To set calendar range limits
+     *
+     * @param minDate - min allowed date
+     * @param maxDate - max allowed date
+     */
+    public void setCalendarLimits(@Nullable Calendar minDate, @Nullable Calendar maxDate) {
+        if (minDate != null && maxDate != null && maxDate.before(minDate)) {
+            throw new RuntimeException("Min date can not be after max date.");
+        }
+        adapterEventCalendarMonths.setCalendarLimits(minDate, maxDate);
+    }
+
+    /**
      * Gets start date.
      */
     public Calendar getStartDate() {
         return adapterEventCalendarMonths.getMinSelectedDate();
     }
-
 
     /**
      * Gets end date.

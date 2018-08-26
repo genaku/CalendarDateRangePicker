@@ -8,6 +8,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorInt;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -43,8 +44,12 @@ public class DateRangeMonthView extends LinearLayout {
     private DateRangeCalendarView.CalendarListener calendarListener;
 
     private DateRangeCalendarManager dateRangeCalendarManager;
+    private DateRangeCalendarManager allowedRangeCalendarManager;
 
     private final static PorterDuff.Mode FILTER_MODE = PorterDuff.Mode.SRC_IN;
+
+    private Calendar minDate;
+    private Calendar maxDate;
 
     public void setCalendarListener(DateRangeCalendarView.CalendarListener calendarListener) {
         this.calendarListener = calendarListener;
@@ -183,10 +188,11 @@ public class DateRangeMonthView extends LinearLayout {
      * @param month                    Month to be drawn
      * @param dateRangeCalendarManager Calendar data manager
      */
-    public void drawCalendarForMonth(CalendarStyleAttr calendarStyleAttr, Calendar month, DateRangeCalendarManager dateRangeCalendarManager) {
+    public void drawCalendarForMonth(CalendarStyleAttr calendarStyleAttr, Calendar month, DateRangeCalendarManager dateRangeCalendarManager, DateRangeCalendarManager allowedRangeCalendarManager) {
         this.calendarStyleAttr = calendarStyleAttr;
         this.currentCalendarMonth = (Calendar) month.clone();
         this.dateRangeCalendarManager = dateRangeCalendarManager;
+        this.allowedRangeCalendarManager = allowedRangeCalendarManager;
         setFonts();
         setWeekTitleColor(calendarStyleAttr.getWeekColor());
         drawCalendarForMonth(currentCalendarMonth);
@@ -220,7 +226,7 @@ public class DateRangeMonthView extends LinearLayout {
 
         int startDay = month.get(Calendar.DAY_OF_WEEK) - calendarStyleAttr.getWeekOffset();
 
-        //To ratate week day according to offset
+        //To rotate week day according to offset
         if (startDay < 1) {
             startDay = startDay + 7;
         }
@@ -253,31 +259,27 @@ public class DateRangeMonthView extends LinearLayout {
      * @param calendar  - Calendar obj of specific date of the month.
      */
     private void drawDayContainer(DayContainer container, Calendar calendar) {
-
-        Calendar today = Calendar.getInstance();
-
         int date = calendar.get(Calendar.DATE);
-
         if (currentCalendarMonth.get(Calendar.MONTH) != calendar.get(Calendar.MONTH)) {
             hideDayContainer(container);
-//        } else if (today.after(calendar) && (today.get(Calendar.DAY_OF_YEAR) != calendar.get(Calendar.DAY_OF_YEAR))) {
-//            disableDayContainer(container);
-//            container.tvDate.setText(String.valueOf(date));
         } else {
-
             @DateRangeCalendarManager.RANGE_TYPE
-            int type = dateRangeCalendarManager.checkDateRange(calendar);
-            if (type == DateRangeCalendarManager.RANGE_TYPE.START_DATE || type == DateRangeCalendarManager.RANGE_TYPE.LAST_DATE) {
-                makeAsSelectedDate(container, type);
-            } else if (type == DateRangeCalendarManager.RANGE_TYPE.MIDDLE_DATE) {
-                makeAsRangeDate(container);
+            int allowedType = allowedRangeCalendarManager.checkDateRange(calendar);
+            if (allowedType == DateRangeCalendarManager.RANGE_TYPE.NOT_IN_RANGE) {
+                disableDayContainer(container);
             } else {
-                enabledDayContainer(container);
+                @DateRangeCalendarManager.RANGE_TYPE
+                int type = dateRangeCalendarManager.checkDateRange(calendar);
+                if (type == DateRangeCalendarManager.RANGE_TYPE.START_DATE || type == DateRangeCalendarManager.RANGE_TYPE.LAST_DATE) {
+                    makeAsSelectedDate(container, type);
+                } else if (type == DateRangeCalendarManager.RANGE_TYPE.MIDDLE_DATE) {
+                    makeAsRangeDate(container);
+                } else {
+                    enabledDayContainer(container);
+                }
             }
-
             container.tvDate.setText(String.valueOf(date));
         }
-
         container.rootView.setTag(DayContainer.GetContainerKey(calendar));
     }
 
@@ -380,7 +382,6 @@ public class DateRangeMonthView extends LinearLayout {
         container.rootView.setOnClickListener(dayClickListener);
     }
 
-
     /**
      * To remove all selection and redraw current calendar
      */
@@ -392,7 +393,6 @@ public class DateRangeMonthView extends LinearLayout {
         drawCalendarForMonth(currentCalendarMonth);
 
     }
-
 
     /**
      * To set week title color
@@ -410,7 +410,6 @@ public class DateRangeMonthView extends LinearLayout {
      * To apply custom fonts to all the text views
      */
     private void setFonts() {
-
         drawCalendarForMonth(currentCalendarMonth);
 
         for (int i = 0; i < llTitleWeekContainer.getChildCount(); i++) {
@@ -419,5 +418,17 @@ public class DateRangeMonthView extends LinearLayout {
             textView.setTypeface(calendarStyleAttr.getFonts());
 
         }
+    }
+
+    /**
+     * To set calendar range limits
+     *
+     * @param minDate - min allowed date
+     * @param maxDate - max allowed date
+     */
+    public void setCalendarLimits(@Nullable Calendar minDate, @Nullable Calendar maxDate) {
+        allowedRangeCalendarManager.setMinSelectedDate(minDate);
+        allowedRangeCalendarManager.setMaxSelectedDate(maxDate);
+        drawCalendarForMonth(currentCalendarMonth);
     }
 }

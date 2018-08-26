@@ -24,6 +24,42 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
+            <LinearLayout
+                android:id="@+id/layToday"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_red_light"
+                android:orientation="vertical"
+                android:paddingBottom="8dp"
+                android:paddingLeft="16dp"
+                android:paddingTop="10dp"
+                custom:layout_constraintEnd_toEndOf="parent"
+                custom:layout_constraintHorizontal_bias="0.0"
+                custom:layout_constraintStart_toStartOf="parent"
+                custom:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tvYear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="#b3ffffff"
+                    custom:layout_constraintStart_toStartOf="parent"
+                    custom:layout_constraintTop_toTopOf="parent"
+                    tools:text="2018" />
+
+                <TextView
+                    android:id="@+id/tvDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="30sp"
+                    custom:layout_constraintStart_toStartOf="parent"
+                    custom:layout_constraintTop_toBottomOf="@+id/tvYear"
+                    tools:text="Чт. 11 авг." />
+            </LinearLayout>
+
             <com.archit.calendardaterangepicker.customviews.DateRangeCalendarView
                 android:id="@+id/calendar"
                 android:layout_width="wrap_content"
@@ -31,10 +67,13 @@
                 custom:calendar_tag="Test"
                 custom:disable_date_color="#ABABAB"
                 custom:header_bg="@drawable/calendar_header"
+                custom:layout_constraintEnd_toEndOf="parent"
+                custom:layout_constraintStart_toStartOf="parent"
+                custom:layout_constraintTop_toBottomOf="@+id/layToday"
                 custom:range_color="@color/range_bg_color_app"
                 custom:selected_date_circle_color="@color/selected_date_circle_color_app"
-                custom:title_color="@color/calendar_header_title"
-                custom:week_offset="0">
+                custom:title_color="@color/calendar_text"
+                custom:week_offset="1">
 
             </com.archit.calendardaterangepicker.customviews.DateRangeCalendarView>
 

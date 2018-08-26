@@ -22,12 +22,10 @@ public class CustomTextView extends AppCompatTextView {
     }
 
     private void initViews(Context context, AttributeSet attrs, int defStyle) {
-
         if (isInEditMode()) {
             return;
         }
         setFonts(attrs, defStyle);
-
     }
 
     private void setFonts(AttributeSet attrs, int defStyle) {

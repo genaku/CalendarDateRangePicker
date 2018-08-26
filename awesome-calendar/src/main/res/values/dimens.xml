@@ -18,7 +18,7 @@
     <dimen name="dayOfMonthImageSize">4dp</dimen>
     <dimen name="dayOfMonthImageMarginTop">32dp</dimen>
 
-    <dimen name="strip_height">28dp</dimen>
+    <dimen name="strip_height">34dp</dimen>
 
 
 </resources>
